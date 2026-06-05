@@ -38,6 +38,14 @@ def build(path: Path) -> Path:
             (1, 1748973600000, 1748980800000, 5),   -- 2h deep
             (1, 1748980800000, 1748984400000, 6),   -- 1h rem
             (1, 1748984400000, 1748988000000, 4);   -- 1h light (ignored)
+
+        CREATE TABLE nutrition_record_table (
+            uuid TEXT, start_time INTEGER, start_zone_offset INTEGER,
+            energy REAL, protein REAL, total_carbohydrate REAL, total_fat REAL,
+            dietary_fiber REAL, sugar REAL, sodium REAL);
+        INSERT INTO nutrition_record_table VALUES
+            ('n1', 1749000000000, -10800, 1410000.0, 60.0, 150.0, 45.0, 19.2, 53.8, 2.017),
+            ('n2', 1749003600000, -10800, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);  -- empty, skipped
         """
     )
     con.commit()

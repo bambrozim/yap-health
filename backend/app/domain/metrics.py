@@ -21,6 +21,13 @@ METRICS = {m.key: m for m in [
     MetricDef("sleep_duration", "sleep", "sum", "h"),
     MetricDef("sleep_deep", "sleep", "sum", "h"),
     MetricDef("sleep_rem", "sleep", "sum", "h"),
+    MetricDef("energy_kcal", "nutrition", "sum", "kcal"),
+    MetricDef("protein_g", "nutrition", "sum", "g"),
+    MetricDef("carbs_g", "nutrition", "sum", "g"),
+    MetricDef("fat_g", "nutrition", "sum", "g"),
+    MetricDef("fiber_g", "nutrition", "sum", "g"),
+    MetricDef("sugar_g", "nutrition", "sum", "g"),
+    MetricDef("sodium_mg", "nutrition", "sum", "mg"),
 ]}
 
 

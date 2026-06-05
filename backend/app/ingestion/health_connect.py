@@ -37,6 +37,18 @@ _MILLIS_PER_HOUR = 3_600_000.0
 # Health Connect sleep stage codes -> charted metric (only deep/rem are surfaced).
 _STAGE_METRIC = {5: "sleep_deep", 6: "sleep_rem"}
 
+# nutrition column -> (metric, transform, unit). Energy is stored in calories and
+# mass nutrients in grams; sodium is grams -> mg.
+_NUTRIENT_MAP = [
+    ("energy", "energy_kcal", lambda v: float(v) / 1000.0, "kcal"),
+    ("protein", "protein_g", float, "g"),
+    ("total_carbohydrate", "carbs_g", float, "g"),
+    ("total_fat", "fat_g", float, "g"),
+    ("dietary_fiber", "fiber_g", float, "g"),
+    ("sugar", "sugar_g", float, "g"),
+    ("sodium", "sodium_mg", lambda v: float(v) * 1000.0, "mg"),
+]
+
 
 class HealthConnectSqliteImporter:
     source = SOURCE
@@ -68,8 +80,28 @@ class HealthConnectSqliteImporter:
                                                 float(bpm), "bpm")
 
             yield from self._parse_sleep(con)
+            yield from self._parse_nutrition(con)
         finally:
             con.close()
+
+    def _parse_nutrition(self, con: sqlite3.Connection) -> Iterator[ParsedMeasurement]:
+        if not _table_exists(con, "nutrition_record_table"):
+            return
+        cols = _columns(con, "nutrition_record_table")
+        if "start_time" not in cols or "energy" not in cols:
+            return
+        present = [(c, m, fn, u) for c, m, fn, u in _NUTRIENT_MAP if c in cols]
+        select_cols = ", ".join(c for c, _, _, _ in present)
+        # Skip empty/placeholder entries. Energy is in calories, so >= 1000
+        # (1 kcal) drops the near-zero denormalized-float placeholders.
+        for row in con.execute(
+                f"SELECT {select_cols}, start_time FROM nutrition_record_table "
+                "WHERE energy IS NOT NULL AND energy >= 1000"):
+            ts = _to_utc(row[-1])
+            for (_, metric, fn, unit), value in zip(present, row[:-1]):
+                if value is None:
+                    continue
+                yield ParsedMeasurement(metric, ts, fn(value), unit)
 
     def _parse_sleep(self, con: sqlite3.Connection) -> Iterator[ParsedMeasurement]:
         # Nightly sleep duration: one value per session (hours), timestamped at

@@ -35,3 +35,15 @@ def test_parses_sleep_duration_and_stages(tmp_path):
     assert rem[0].value == 1.0
     # light stage (type 4) is not surfaced
     assert not [p for p in parsed if p.metric == "sleep_light"]
+
+
+def test_parses_nutrition_and_skips_empty(tmp_path):
+    db = build(tmp_path / "export.db")
+    parsed = list(HealthConnectSqliteImporter().parse(db))
+    energy = [p for p in parsed if p.metric == "energy_kcal"]
+    assert len(energy) == 1  # the 0-energy record is skipped
+    assert energy[0].value == 1410.0 and energy[0].unit == "kcal"
+    sodium = [p for p in parsed if p.metric == "sodium_mg"][0]
+    assert sodium.value == 2017.0 and sodium.unit == "mg"  # grams -> mg
+    fiber = [p for p in parsed if p.metric == "fiber_g"][0]
+    assert fiber.value == 19.2 and fiber.unit == "g"
