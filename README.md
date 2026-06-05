@@ -22,7 +22,7 @@ pasta sincronizada (inbox)  →  ingestão  →  SQLite canônico  →  motor de
 
 - **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, SQLite.
 - **Frontend:** React + TypeScript (Vite), Recharts, Tailwind.
-- **Domínios:** Atividade, Cardíaco, Sono e Nutrição. Roadmap: Corpo.
+- **Domínios:** Atividade, Cardíaco, Sono, Nutrição e Corpo (todos os 5 do roadmap entregues).
 
 ## Fontes de dados e deduplicação
 
@@ -105,5 +105,6 @@ domínio é a média das métricas pontuadas; o score geral é a média ponderad
 | Sódio | < 2000 mg/dia (amarelo 2000–2500) | OMS |
 | Açúcar | < 50 g/dia (amarelo 50–65) | OMS (proxy de açúcar total) |
 | Fibra | ≥ 25 g/dia (amarelo 15–25) | OMS / DRI |
-| HRV / FC / sono profundo·REM / energia·macros | tendência (insight) / gráfico | — |
+| IMC | 18,5–24,9 (amarelo 17–29,9) | OMS |
+| HRV / FC / sono profundo·REM / energia·macros / peso·gordura | tendência (insight) / gráfico | — |
 | Atividade moderada | 150–300 min/semana | OMS 2020 |

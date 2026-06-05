@@ -1,7 +1,7 @@
 # yap-health — Design
 
 **Data:** 2026-06-05
-**Status:** Entregues e merjados: Atividade, Cardíaco, Sono e Nutrição. Próxima fatia: Corpo.
+**Status:** Todos os 5 domínios entregues e merjados: Atividade, Cardíaco, Sono, Nutrição e Corpo.
 **Autor:** Bruna Ambrozim Silveira (com Claude)
 
 ## 1. Visão geral
