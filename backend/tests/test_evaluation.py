@@ -21,3 +21,15 @@ def test_steps_green_above_target():
 
 def test_metric_without_target_returns_none():
     assert evaluate_value("heart_rate", 70.0) is None
+
+
+def test_sleep_green_at_8h():
+    assert evaluate_value("sleep_duration", 8.0).status == "green"
+
+
+def test_sleep_red_when_too_short():
+    assert evaluate_value("sleep_duration", 4.5).status == "red"
+
+
+def test_sleep_yellow_when_slightly_short():
+    assert evaluate_value("sleep_duration", 6.5).status == "yellow"

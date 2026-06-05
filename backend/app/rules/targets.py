@@ -23,4 +23,7 @@ TARGETS = {
         "resting_heart_rate", "daily_range", green=(60, 100), yellow=(50, 110),
         unit="bpm",
         source="American Heart Association: normal resting heart rate 60-100 bpm"),
+    "sleep_duration": Target(
+        "sleep_duration", "daily_range", green=(7, 9), yellow=(6, 10), unit="h",
+        source="National Sleep Foundation: adults (18-64) need 7-9 h/night"),
 }

@@ -17,6 +17,12 @@ def test_domain_score_none_when_no_scored_metric():
     assert domain_score("cardio", {"heart_rate": 70.0}) is None
 
 
+def test_sleep_domain_scores_from_duration():
+    # only sleep_duration is scored; deep/rem are chart-only (no target)
+    latest = {"sleep_duration": 8.0, "sleep_deep": 2.0, "sleep_rem": 1.0}
+    assert domain_score("sleep", latest) == 100.0
+
+
 def test_overall_is_weighted_mean():
     scores = {"cardio": 60.0, "activity": 100.0}
     assert overall_score(scores) == 80.0
