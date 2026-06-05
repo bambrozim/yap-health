@@ -18,6 +18,9 @@ METRICS = {m.key: m for m in [
     MetricDef("hrv_rmssd", "cardio", "mean", "ms"),
     MetricDef("resting_heart_rate", "cardio", "min", "bpm"),
     MetricDef("spo2", "cardio", "mean", "%"),
+    MetricDef("sleep_duration", "sleep", "sum", "h"),
+    MetricDef("sleep_deep", "sleep", "sum", "h"),
+    MetricDef("sleep_rem", "sleep", "sum", "h"),
 ]}
 
 

@@ -33,6 +33,11 @@ def _to_utc(millis: int) -> datetime:
     return datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc)
 
 
+_MILLIS_PER_HOUR = 3_600_000.0
+# Health Connect sleep stage codes -> charted metric (only deep/rem are surfaced).
+_STAGE_METRIC = {5: "sleep_deep", 6: "sleep_rem"}
+
+
 class HealthConnectSqliteImporter:
     source = SOURCE
 
@@ -61,5 +66,32 @@ class HealthConnectSqliteImporter:
                             "FROM heart_rate_record_series_table"):
                         yield ParsedMeasurement("heart_rate", _to_utc(millis),
                                                 float(bpm), "bpm")
+
+            yield from self._parse_sleep(con)
         finally:
             con.close()
+
+    def _parse_sleep(self, con: sqlite3.Connection) -> Iterator[ParsedMeasurement]:
+        # Nightly sleep duration: one value per session (hours), timestamped at
+        # wake time so daily aggregation buckets a night by its wake-up date and
+        # sums any fragmented sessions.
+        if _table_exists(con, "sleep_session_record_table"):
+            cols = _columns(con, "sleep_session_record_table")
+            if {"start_time", "end_time"} <= cols:
+                for start, end in con.execute(
+                        "SELECT start_time, end_time FROM sleep_session_record_table"):
+                    hours = (end - start) / _MILLIS_PER_HOUR
+                    yield ParsedMeasurement("sleep_duration", _to_utc(end), hours, "h")
+
+        # Deep / REM minutes per night, derived from stage rows (charted only).
+        if _table_exists(con, "sleep_stages_table"):
+            cols = _columns(con, "sleep_stages_table")
+            if {"stage_start_time", "stage_end_time", "stage_type"} <= cols:
+                for s_start, s_end, s_type in con.execute(
+                        "SELECT stage_start_time, stage_end_time, stage_type "
+                        "FROM sleep_stages_table"):
+                    metric = _STAGE_METRIC.get(s_type)
+                    if metric is None:
+                        continue
+                    hours = (s_end - s_start) / _MILLIS_PER_HOUR
+                    yield ParsedMeasurement(metric, _to_utc(s_end), hours, "h")
