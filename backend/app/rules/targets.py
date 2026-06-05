@@ -26,4 +26,14 @@ TARGETS = {
     "sleep_duration": Target(
         "sleep_duration", "daily_range", green=(7, 9), yellow=(6, 10), unit="h",
         source="National Sleep Foundation: adults (18-64) need 7-9 h/night"),
+    "sodium_mg": Target(
+        "sodium_mg", "daily_max", green=(0, 2000), yellow=(2000, 2500), unit="mg",
+        source="OMS: ingestão de sódio < 2 g/dia"),
+    "sugar_g": Target(
+        "sugar_g", "daily_max", green=(0, 50), yellow=(50, 65), unit="g",
+        source="OMS: açúcares livres < 10% das calorias (~50 g/2000 kcal); "
+               "açúcar total usado como proxy"),
+    "fiber_g": Target(
+        "fiber_g", "daily_min", green=(25, float("inf")), yellow=(15, 25), unit="g",
+        source="OMS/DRI: fibra alimentar >= 25 g/dia"),
 }

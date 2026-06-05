@@ -33,3 +33,19 @@ def test_sleep_red_when_too_short():
 
 def test_sleep_yellow_when_slightly_short():
     assert evaluate_value("sleep_duration", 6.5).status == "yellow"
+
+
+def test_sodium_green_under_2g():
+    assert evaluate_value("sodium_mg", 1500.0).status == "green"
+
+
+def test_sodium_red_when_high():
+    assert evaluate_value("sodium_mg", 3000.0).status == "red"
+
+
+def test_fiber_green_at_30g():
+    assert evaluate_value("fiber_g", 30.0).status == "green"
+
+
+def test_sugar_yellow_just_over_limit():
+    assert evaluate_value("sugar_g", 55.0).status == "yellow"

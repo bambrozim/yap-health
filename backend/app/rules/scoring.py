@@ -4,7 +4,7 @@ from app.domain.metrics import metrics_for_domain
 from app.rules.evaluation import evaluate_value
 
 _POINTS = {"green": 100, "yellow": 60, "red": 20}
-DOMAIN_WEIGHTS = {"cardio": 1.0, "activity": 1.0, "sleep": 1.0}
+DOMAIN_WEIGHTS = {"cardio": 1.0, "activity": 1.0, "sleep": 1.0, "nutrition": 1.0}
 
 
 def status_to_points(status: str) -> int:
