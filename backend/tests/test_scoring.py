@@ -31,6 +31,12 @@ def test_nutrition_scores_from_sodium_sugar_fiber():
     assert domain_score("nutrition", latest) == 73.3
 
 
+def test_body_scores_from_bmi_only():
+    # bmi yellow (60); weight/body_fat have no target and are excluded
+    latest = {"bmi": 27.8, "weight_kg": 72.0, "body_fat_pct": 26.5}
+    assert domain_score("body", latest) == 60.0
+
+
 def test_overall_is_weighted_mean():
     scores = {"cardio": 60.0, "activity": 100.0}
     assert overall_score(scores) == 80.0

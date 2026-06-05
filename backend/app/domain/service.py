@@ -6,7 +6,7 @@ from app.domain.aggregation import daily_series
 from app.domain.metrics import METRICS
 from app.rules.scoring import domain_score, overall_score
 
-DOMAINS = ["cardio", "activity", "sleep", "nutrition"]
+DOMAINS = ["cardio", "activity", "sleep", "nutrition", "body"]
 
 
 def latest_daily_values(session: Session, metrics: list[str],

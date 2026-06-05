@@ -36,4 +36,7 @@ TARGETS = {
     "fiber_g": Target(
         "fiber_g", "daily_min", green=(25, float("inf")), yellow=(15, 25), unit="g",
         source="OMS/DRI: fibra alimentar >= 25 g/dia"),
+    "bmi": Target(
+        "bmi", "daily_range", green=(18.5, 24.9), yellow=(17, 29.9), unit="kg/m2",
+        source="OMS: IMC saudável 18,5-24,9 (sobrepeso 25-29,9; abaixo do peso < 18,5)"),
 }

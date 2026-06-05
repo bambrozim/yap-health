@@ -49,3 +49,15 @@ def test_fiber_green_at_30g():
 
 def test_sugar_yellow_just_over_limit():
     assert evaluate_value("sugar_g", 55.0).status == "yellow"
+
+
+def test_bmi_green_in_healthy_range():
+    assert evaluate_value("bmi", 22.0).status == "green"
+
+
+def test_bmi_yellow_when_overweight():
+    assert evaluate_value("bmi", 27.8).status == "yellow"
+
+
+def test_bmi_red_when_obese():
+    assert evaluate_value("bmi", 31.0).status == "red"
