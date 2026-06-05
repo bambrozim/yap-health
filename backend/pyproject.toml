@@ -1,0 +1,21 @@
+[project]
+name = "yap-health"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "sqlalchemy>=2.0",
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+  "watchdog>=4.0",
+  "fitparse>=1.2",
+  "tcxreader>=0.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
