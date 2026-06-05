@@ -4,6 +4,7 @@ const LABELS: Record<string, string> = {
   cardio: "Cardíaco",
   activity: "Atividade",
   sleep: "Sono",
+  nutrition: "Nutrição",
 };
 
 const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
@@ -23,9 +24,22 @@ const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
     { metric: "sleep_deep", title: "Sono profundo" },
     { metric: "sleep_rem", title: "Sono REM" },
   ],
+  nutrition: [
+    { metric: "energy_kcal", title: "Energia" },
+    { metric: "protein_g", title: "Proteína" },
+    { metric: "carbs_g", title: "Carboidratos" },
+    { metric: "fat_g", title: "Gordura" },
+    { metric: "fiber_g", title: "Fibra" },
+    { metric: "sugar_g", title: "Açúcar" },
+    { metric: "sodium_mg", title: "Sódio" },
+  ],
 };
 
-export function Domain({ domain }: { domain: "cardio" | "activity" | "sleep" }) {
+export function Domain({
+  domain,
+}: {
+  domain: "cardio" | "activity" | "sleep" | "nutrition";
+}) {
   return (
     <main className="mx-auto max-w-4xl space-y-4 p-8">
       <h1 className="text-2xl font-bold">{LABELS[domain] ?? domain}</h1>
