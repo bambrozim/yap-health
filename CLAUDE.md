@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `yap-health` is a **local-first, offline** personal health dashboard. It ingests data exported
 from Health Sync / Health Connect, stores it in a canonical SQLite DB, evaluates it against
 guideline-backed targets, and serves per-domain charts + sub-scores + an overall health score.
-No data leaves the machine. v1 implements a vertical slice covering two domains: **activity**
-and **cardio** (roadmap: sleep → nutrition → body).
+No data leaves the machine. Implemented domains: **activity**, **cardio**, and **sleep**
+(roadmap: nutrition → body). Each domain was added as a vertical slice following the same pattern.
 
 Design + plan live in `docs/superpowers/specs/` and `docs/superpowers/plans/`.
 
@@ -78,7 +78,7 @@ source, dedup_key`), `workouts`, and `import_runs` (audit). All metrics share th
 ### Metrics & domains (`app/domain/metrics.py`)
 
 The `METRICS` dict is the **single source of truth** for which metric ids exist, their domain
-(`activity` | `cardio`), daily aggregation (`sum`/`mean`/`min`), and unit. `aggregation.daily_series()`
+(`activity` | `cardio` | `sleep`), daily aggregation (`sum`/`mean`/`min`), and unit. `aggregation.daily_series()`
 buckets measurements by UTC date using each metric's agg rule.
 
 ### Rules engine (`app/rules/`) — deterministic, no LLM
