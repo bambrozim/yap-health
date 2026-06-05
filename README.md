@@ -22,7 +22,7 @@ pasta sincronizada (inbox)  →  ingestão  →  SQLite canônico  →  motor de
 
 - **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, SQLite.
 - **Frontend:** React + TypeScript (Vite), Recharts, Tailwind.
-- **Domínios:** Atividade, Cardíaco e Sono. Roadmap: Nutrição → Corpo.
+- **Domínios:** Atividade, Cardíaco, Sono e Nutrição. Roadmap: Corpo.
 
 ## Fontes de dados e deduplicação
 
@@ -102,5 +102,8 @@ domínio é a média das métricas pontuadas; o score geral é a média ponderad
 | FC de repouso | 60–100 bpm | American Heart Association |
 | SpO₂ | ≥ 95% (amarelo 92–95) | norma clínica (Mayo/AHA) |
 | Duração do sono | 7–9 h/noite (amarelo 6–10) | National Sleep Foundation |
-| HRV / FC / sono profundo/REM | tendência (insight) / gráfico | — |
+| Sódio | < 2000 mg/dia (amarelo 2000–2500) | OMS |
+| Açúcar | < 50 g/dia (amarelo 50–65) | OMS (proxy de açúcar total) |
+| Fibra | ≥ 25 g/dia (amarelo 15–25) | OMS / DRI |
+| HRV / FC / sono profundo·REM / energia·macros | tendência (insight) / gráfico | — |
 | Atividade moderada | 150–300 min/semana | OMS 2020 |

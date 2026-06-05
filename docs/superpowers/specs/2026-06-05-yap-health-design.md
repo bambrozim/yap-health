@@ -1,7 +1,7 @@
 # yap-health — Design
 
 **Data:** 2026-06-05
-**Status:** v1 (Atividade + Cardíaco) implementado e merjado. Fatia Sono também entregue. Próximas: Nutrição → Corpo.
+**Status:** Entregues e merjados: Atividade, Cardíaco, Sono e Nutrição. Próxima fatia: Corpo.
 **Autor:** Bruna Ambrozim Silveira (com Claude)
 
 ## 1. Visão geral
