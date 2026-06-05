@@ -9,9 +9,10 @@ const LABELS: Record<string, string> = {
   activity: "Atividade",
   sleep: "Sono",
   nutrition: "Nutrição",
+  body: "Corpo",
 };
 
-type DomainKey = "cardio" | "activity" | "sleep" | "nutrition";
+type DomainKey = "cardio" | "activity" | "sleep" | "nutrition" | "body";
 
 export function Home({ onOpenDomain }: { onOpenDomain?: (d: DomainKey) => void }) {
   const score = useQuery({ queryKey: ["score"], queryFn: getScore });

@@ -5,6 +5,7 @@ const LABELS: Record<string, string> = {
   activity: "Atividade",
   sleep: "Sono",
   nutrition: "Nutrição",
+  body: "Corpo",
 };
 
 const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
@@ -33,12 +34,17 @@ const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
     { metric: "sugar_g", title: "Açúcar" },
     { metric: "sodium_mg", title: "Sódio" },
   ],
+  body: [
+    { metric: "weight_kg", title: "Peso" },
+    { metric: "bmi", title: "IMC" },
+    { metric: "body_fat_pct", title: "Gordura corporal" },
+  ],
 };
 
 export function Domain({
   domain,
 }: {
-  domain: "cardio" | "activity" | "sleep" | "nutrition";
+  domain: "cardio" | "activity" | "sleep" | "nutrition" | "body";
 }) {
   return (
     <main className="mx-auto max-w-4xl space-y-4 p-8">

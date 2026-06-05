@@ -7,7 +7,7 @@ import { Home } from "@/pages/Home";
 
 const qc = new QueryClient();
 
-export type Route = "home" | "cardio" | "activity" | "sleep" | "nutrition";
+export type Route = "home" | "cardio" | "activity" | "sleep" | "nutrition" | "body";
 
 export default function App() {
   const [route, setRoute] = useState<Route>("home");
