@@ -4,9 +4,13 @@ import { AlertsFeed } from "@/components/AlertsFeed";
 import { ScoreCard } from "@/components/ScoreCard";
 import { getAlerts, getInsights, getScore } from "@/lib/api";
 
-const LABELS: Record<string, string> = { cardio: "Cardíaco", activity: "Atividade" };
+const LABELS: Record<string, string> = {
+  cardio: "Cardíaco",
+  activity: "Atividade",
+  sleep: "Sono",
+};
 
-type DomainKey = "cardio" | "activity";
+type DomainKey = "cardio" | "activity" | "sleep";
 
 export function Home({ onOpenDomain }: { onOpenDomain?: (d: DomainKey) => void }) {
   const score = useQuery({ queryKey: ["score"], queryFn: getScore });

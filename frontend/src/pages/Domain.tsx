@@ -1,6 +1,10 @@
 import { MetricChart } from "@/components/MetricChart";
 
-const LABELS: Record<string, string> = { cardio: "Cardíaco", activity: "Atividade" };
+const LABELS: Record<string, string> = {
+  cardio: "Cardíaco",
+  activity: "Atividade",
+  sleep: "Sono",
+};
 
 const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
   cardio: [
@@ -14,9 +18,14 @@ const DOMAIN_METRICS: Record<string, { metric: string; title: string }[]> = {
     { metric: "active_calories", title: "Calorias ativas" },
     { metric: "distance_km", title: "Distância" },
   ],
+  sleep: [
+    { metric: "sleep_duration", title: "Duração do sono" },
+    { metric: "sleep_deep", title: "Sono profundo" },
+    { metric: "sleep_rem", title: "Sono REM" },
+  ],
 };
 
-export function Domain({ domain }: { domain: "cardio" | "activity" }) {
+export function Domain({ domain }: { domain: "cardio" | "activity" | "sleep" }) {
   return (
     <main className="mx-auto max-w-4xl space-y-4 p-8">
       <h1 className="text-2xl font-bold">{LABELS[domain] ?? domain}</h1>
