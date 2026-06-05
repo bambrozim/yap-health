@@ -81,8 +81,38 @@ class HealthConnectSqliteImporter:
 
             yield from self._parse_sleep(con)
             yield from self._parse_nutrition(con)
+            yield from self._parse_body(con)
         finally:
             con.close()
+
+    def _parse_body(self, con: sqlite3.Connection) -> Iterator[ParsedMeasurement]:
+        # Weight (grams -> kg) and a derived BMI using the latest known height.
+        height_m: float | None = None
+        if _table_exists(con, "height_record_table") and \
+                "height" in _columns(con, "height_record_table"):
+            row = con.execute(
+                "SELECT height FROM height_record_table "
+                "WHERE height IS NOT NULL ORDER BY time DESC LIMIT 1").fetchone()
+            if row and row[0] > 0:
+                height_m = float(row[0])
+
+        if _table_exists(con, "weight_record_table") and \
+                {"time", "weight"} <= _columns(con, "weight_record_table"):
+            for millis, grams in con.execute(
+                    "SELECT time, weight FROM weight_record_table "
+                    "WHERE weight IS NOT NULL"):
+                ts = _to_utc(millis)
+                kg = float(grams) / 1000.0
+                yield ParsedMeasurement("weight_kg", ts, kg, "kg")
+                if height_m:
+                    yield ParsedMeasurement("bmi", ts, kg / (height_m ** 2), "kg/m2")
+
+        if _table_exists(con, "body_fat_record_table") and \
+                {"time", "percentage"} <= _columns(con, "body_fat_record_table"):
+            for millis, pct in con.execute(
+                    "SELECT time, percentage FROM body_fat_record_table "
+                    "WHERE percentage IS NOT NULL"):
+                yield ParsedMeasurement("body_fat_pct", _to_utc(millis), float(pct), "%")
 
     def _parse_nutrition(self, con: sqlite3.Connection) -> Iterator[ParsedMeasurement]:
         if not _table_exists(con, "nutrition_record_table"):

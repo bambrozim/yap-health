@@ -47,3 +47,14 @@ def test_parses_nutrition_and_skips_empty(tmp_path):
     assert sodium.value == 2017.0 and sodium.unit == "mg"  # grams -> mg
     fiber = [p for p in parsed if p.metric == "fiber_g"][0]
     assert fiber.value == 19.2 and fiber.unit == "g"
+
+
+def test_parses_body_weight_and_derives_bmi(tmp_path):
+    db = build(tmp_path / "export.db")
+    parsed = list(HealthConnectSqliteImporter().parse(db))
+    weight = [p for p in parsed if p.metric == "weight_kg"][0]
+    assert weight.value == 80.0 and weight.unit == "kg"  # grams -> kg
+    bmi = [p for p in parsed if p.metric == "bmi"][0]
+    assert bmi.value == 20.0  # 80 kg / (2.0 m)^2
+    fat = [p for p in parsed if p.metric == "body_fat_pct"][0]
+    assert fat.value == 25.0 and fat.unit == "%"

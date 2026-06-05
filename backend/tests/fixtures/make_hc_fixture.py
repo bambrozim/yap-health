@@ -46,6 +46,18 @@ def build(path: Path) -> Path:
         INSERT INTO nutrition_record_table VALUES
             ('n1', 1749000000000, -10800, 1410000.0, 60.0, 150.0, 45.0, 19.2, 53.8, 2.017),
             ('n2', 1749003600000, -10800, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);  -- empty, skipped
+
+        CREATE TABLE height_record_table (
+            uuid TEXT, time INTEGER, zone_offset INTEGER, height REAL);
+        INSERT INTO height_record_table VALUES ('h1', 1749000000000, -10800, 2.0);
+
+        CREATE TABLE weight_record_table (
+            uuid TEXT, time INTEGER, zone_offset INTEGER, weight REAL);
+        INSERT INTO weight_record_table VALUES ('w1', 1749000000000, -10800, 80000.0);
+
+        CREATE TABLE body_fat_record_table (
+            uuid TEXT, time INTEGER, zone_offset INTEGER, percentage REAL);
+        INSERT INTO body_fat_record_table VALUES ('bf1', 1749000000000, -10800, 25.0);
         """
     )
     con.commit()

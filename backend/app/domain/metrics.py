@@ -28,6 +28,9 @@ METRICS = {m.key: m for m in [
     MetricDef("fiber_g", "nutrition", "sum", "g"),
     MetricDef("sugar_g", "nutrition", "sum", "g"),
     MetricDef("sodium_mg", "nutrition", "sum", "mg"),
+    MetricDef("weight_kg", "body", "mean", "kg"),
+    MetricDef("bmi", "body", "mean", "kg/m2"),
+    MetricDef("body_fat_pct", "body", "mean", "%"),
 ]}
 
 
