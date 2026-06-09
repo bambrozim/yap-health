@@ -28,6 +28,16 @@ export interface Insight {
   severity: string;
 }
 
+export interface CycleSummary {
+  has_data: boolean;
+  current_cycle_day: number | null;
+  last_period_start: string | null;
+  last_period_end: string | null;
+  avg_cycle_length: number | null;
+  period_count: number;
+  days: { date: string; flow: string }[];
+}
+
 // v1: fixed window covering the available snapshot (Apr–May 2026).
 // Make this user-selectable in a later iteration.
 const range = "from=2026-04-01&to=2026-06-30";
@@ -42,3 +52,5 @@ export const getInsights = () =>
   client
     .get<{ insights: Insight[] }>(`/insights?${range}`)
     .then((r) => r.data.insights);
+export const getCycle = () =>
+  client.get<CycleSummary>("/cycle").then((r) => r.data);

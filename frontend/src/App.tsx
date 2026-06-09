@@ -2,15 +2,33 @@ import { useState } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { Cycle } from "@/pages/Cycle";
 import { Domain } from "@/pages/Domain";
 import { Home } from "@/pages/Home";
 
 const qc = new QueryClient();
 
-export type Route = "home" | "cardio" | "activity" | "sleep" | "nutrition" | "body";
+export type Route =
+  | "home"
+  | "cardio"
+  | "activity"
+  | "sleep"
+  | "nutrition"
+  | "body"
+  | "cycle";
 
 export default function App() {
   const [route, setRoute] = useState<Route>("home");
+
+  const page =
+    route === "home" ? (
+      <Home onNavigate={setRoute} />
+    ) : route === "cycle" ? (
+      <Cycle />
+    ) : (
+      <Domain domain={route} />
+    );
+
   return (
     <QueryClientProvider client={qc}>
       {route !== "home" && (
@@ -22,7 +40,7 @@ export default function App() {
           ← Home
         </button>
       )}
-      {route === "home" ? <Home onOpenDomain={setRoute} /> : <Domain domain={route} />}
+      {page}
     </QueryClientProvider>
   );
 }

@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
+import type { Route } from "@/App";
 import { AlertsFeed } from "@/components/AlertsFeed";
+import { CycleCard } from "@/components/CycleCard";
 import { ScoreCard } from "@/components/ScoreCard";
-import { getAlerts, getInsights, getScore } from "@/lib/api";
+import { getAlerts, getCycle, getInsights, getScore } from "@/lib/api";
 
 const LABELS: Record<string, string> = {
   cardio: "Cardíaco",
@@ -14,10 +16,11 @@ const LABELS: Record<string, string> = {
 
 type DomainKey = "cardio" | "activity" | "sleep" | "nutrition" | "body";
 
-export function Home({ onOpenDomain }: { onOpenDomain?: (d: DomainKey) => void }) {
+export function Home({ onNavigate }: { onNavigate?: (r: Route) => void }) {
   const score = useQuery({ queryKey: ["score"], queryFn: getScore });
   const alerts = useQuery({ queryKey: ["alerts"], queryFn: getAlerts });
   const insights = useQuery({ queryKey: ["insights"], queryFn: getInsights });
+  const cycle = useQuery({ queryKey: ["cycle"], queryFn: getCycle });
 
   return (
     <main className="mx-auto max-w-4xl space-y-8 p-8">
@@ -35,12 +38,17 @@ export function Home({ onOpenDomain }: { onOpenDomain?: (d: DomainKey) => void }
             key={k}
             type="button"
             className="text-left transition hover:opacity-80"
-            onClick={() => onOpenDomain?.(k as DomainKey)}
+            onClick={() => onNavigate?.(k as DomainKey)}
           >
             <ScoreCard label={LABELS[k] ?? k} score={v} />
           </button>
         ))}
       </div>
+
+      <section>
+        <h2 className="mb-3 text-lg font-semibold">Ciclo menstrual</h2>
+        <CycleCard cycle={cycle.data} onClick={() => onNavigate?.("cycle")} />
+      </section>
 
       <section>
         <h2 className="mb-3 text-lg font-semibold">Alertas &amp; insights</h2>
