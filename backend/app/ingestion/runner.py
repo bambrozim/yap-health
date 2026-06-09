@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.db.models import ImportRun
 from app.ingestion.clue import ClueJsonImporter
 from app.ingestion.health_connect import HealthConnectSqliteImporter
+from app.ingestion.health_sync_csv import HealthSyncCsvImporter
 from app.ingestion.health_sync_workouts import TcxWorkoutImporter
 from app.ingestion.persist import (
     persist_cycle_entries,
@@ -29,6 +30,12 @@ def process_file(session: Session, path: Path) -> ImportRun:
             run.source = imp.source
             run.rows_imported = persist_workouts(
                 session, [imp.parse(path)], source=imp.source)
+            run.status = "ok"
+        elif path.suffix == ".csv":
+            imp = HealthSyncCsvImporter()
+            run.source = imp.source
+            run.rows_imported = persist_measurements(
+                session, imp.parse(path), source=imp.source)
             run.status = "ok"
         elif ClueJsonImporter().matches(path):
             imp = ClueJsonImporter()
