@@ -17,6 +17,24 @@ def test_process_db_file_populates_measurements(tmp_path):
         assert s.query(Measurement).filter_by(metric="steps").count() == 2
 
 
+def test_process_clue_measurements_populates_cycle(tmp_path):
+    import json
+
+    from app.db.models import CycleEntry
+    eng = create_engine("sqlite://")
+    Base.metadata.create_all(eng)
+    f = tmp_path / "measurements.json"
+    f.write_text(json.dumps([
+        {"type": "period", "id": "a", "date": "2026-05-23", "value": {"option": "heavy"}},
+        {"type": "feelings", "id": "b", "date": "2026-05-23", "value": [{"option": "sad"}]},
+    ]))
+    with Session(eng) as s:
+        run = process_file(s, f)
+        assert run.status == "ok"
+        assert run.rows_imported == 1
+        assert s.query(CycleEntry).count() == 1
+
+
 def test_process_unknown_file_is_skipped(tmp_path):
     eng = create_engine("sqlite://")
     Base.metadata.create_all(eng)

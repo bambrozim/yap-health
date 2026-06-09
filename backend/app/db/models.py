@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import DateTime, Float, Integer, String, UniqueConstraint
+from sqlalchemy import Date, DateTime, Float, Integer, String, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -30,6 +30,17 @@ class Workout(Base):
     duration_s: Mapped[int] = mapped_column(Integer)
     distance_km: Mapped[float] = mapped_column(Float, default=0.0)
     calories: Mapped[float] = mapped_column(Float, default=0.0)
+    source: Mapped[str] = mapped_column(String)
+    dedup_key: Mapped[str] = mapped_column(String)
+
+
+class CycleEntry(Base):
+    """A single menstruation day logged in Clue (categorical flow, not scored)."""
+    __tablename__ = "cycle_entries"
+    __table_args__ = (UniqueConstraint("dedup_key", name="uq_cycle_dedup"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    day: Mapped[date] = mapped_column(Date, index=True)
+    flow: Mapped[str] = mapped_column(String)  # light | medium | heavy
     source: Mapped[str] = mapped_column(String)
     dedup_key: Mapped[str] = mapped_column(String)
 

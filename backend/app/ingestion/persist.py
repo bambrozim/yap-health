@@ -3,8 +3,13 @@ from collections.abc import Iterable
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.models import Measurement, Workout
-from app.ingestion.base import ParsedMeasurement, ParsedWorkout, make_dedup_key
+from app.db.models import CycleEntry, Measurement, Workout
+from app.ingestion.base import (
+    ParsedCycleEntry,
+    ParsedMeasurement,
+    ParsedWorkout,
+    make_dedup_key,
+)
 
 
 def persist_measurements(session: Session, items: Iterable[ParsedMeasurement],
@@ -31,6 +36,19 @@ def persist_workouts(session: Session, items: Iterable[ParsedWorkout],
         session.add(Workout(type=w.type, start_ts=w.start_ts, end_ts=w.end_ts,
                             duration_s=w.duration_s, distance_km=w.distance_km,
                             calories=w.calories, source=source, dedup_key=key))
+        inserted += 1
+    session.commit()
+    return inserted
+
+
+def persist_cycle_entries(session: Session, items: Iterable[ParsedCycleEntry],
+                          source: str) -> int:
+    inserted = 0
+    for e in items:
+        key = f"{source}:{e.day.isoformat()}"
+        if session.scalar(select(CycleEntry.id).where(CycleEntry.dedup_key == key)):
+            continue
+        session.add(CycleEntry(day=e.day, flow=e.flow, source=source, dedup_key=key))
         inserted += 1
     session.commit()
     return inserted

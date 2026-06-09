@@ -1,6 +1,6 @@
 import hashlib
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 
 
 @dataclass
@@ -20,6 +20,12 @@ class ParsedWorkout:
     distance_km: float
     calories: float
     source_uuid: str | None = None
+
+
+@dataclass
+class ParsedCycleEntry:
+    day: date
+    flow: str  # light | medium | heavy
 
 
 def make_dedup_key(metric: str, ts: datetime, value: float,
