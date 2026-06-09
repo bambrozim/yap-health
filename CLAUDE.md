@@ -56,14 +56,22 @@ inbox folder → ingestion → canonical SQLite → domain aggregation → rules
 
 ### Ingestion (`app/ingestion/`)
 
-- **Sources.** The Health Connect `.db` SQLite export (`health_connect.py`) is the canonical
-  source for the five scored domains. Health Sync `.tcx` files (`health_sync_workouts.py`)
-  supplement workout summaries. The **Clue native JSON export** (`clue.py`, `measurements.json`)
-  provides the **menstrual cycle** (period/flow) — this is informational and **not scored**, and
-  lives in its own `cycle_entries` table (not `measurements`). Health Sync CSVs are derived from
-  Health Connect, so they aren't re-imported.
-- `runner.process_file()` dispatches by file suffix (`.db` → measurements, `.tcx` → workouts,
-  `measurements.json` → cycle entries).
+- **Sources.** Two interchangeable sources feed the five scored domains: the Health Connect
+  `.db` SQLite export (`health_connect.py`) and the **Health Sync CSV exports**
+  (`health_sync_csv.py`). They carry the same readings in different shapes/units — Health Connect
+  stores energy in calories and mass in grams; the CSVs are already in canonical units (kcal,
+  grams, kg). **Import only one of them for a given period** — both use `source="health_sync"`/
+  `"health_connect"` in the dedup key, so importing a populated `.db` *and* the CSVs would
+  double-count. In the current data the `.db` is empty and the CSVs are the active source.
+  Health Sync `.tcx` files (`health_sync_workouts.py`) supplement workout summaries. The **Clue
+  native JSON export** (`clue.py`, `measurements.json`) provides the **menstrual cycle**
+  (period/flow) — informational, **not scored**, in its own `cycle_entries` table.
+- `runner.process_file()` dispatches by file suffix (`.db` → HC measurements, `.csv` → Health
+  Sync measurements, `.tcx` → workouts, `measurements.json` → cycle entries).
+- **Two quirks worth knowing:** Health Sync CSVs have no sodium (nutrition) or height column —
+  so `sodium_mg` is absent and BMI is derived from `settings.height_m` (`YAP_HEIGHT_M`, default
+  1.61). Sleep CSVs are stage segments aggregated per night in `health_sync_csv.py` (segments
+  from 18:00 on count toward the next wake date) to avoid splitting a night across midnight.
   `process_inbox()` walks a folder; `watcher.watch()` is the watchdog daemon for live imports.
 - **Idempotency** is via `make_dedup_key()` in `base.py` (`base.py`): `source:uuid` when
   available, else `source:sha1(metric|ts|value)`. `persist.py` skips rows whose `dedup_key`

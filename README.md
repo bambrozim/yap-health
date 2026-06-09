@@ -29,9 +29,14 @@ pasta sincronizada (inbox)  →  ingestão  →  SQLite canônico  →  motor de
 
 | Fonte | Papel |
 |---|---|
-| Health Connect export (`.db` SQLite) | **Canônico** — armazenamento estruturado de origem |
+| Health Connect export (`.db` SQLite) | Fonte dos 5 domínios (energia em cal, massa em g) |
+| Health Sync CSVs (`*.csv`) | Fonte alternativa dos 5 domínios, já em unidades canônicas (kcal/g/kg) |
 | Health Sync `.tcx` (treinos) | Suplemento — resumo de treino (duração, distância, calorias) |
 | Clue export nativo (`measurements.json`) | Ciclo menstrual (período/fluxo) — informativo, **não pontuado** |
+
+> **Importe só uma** das fontes dos 5 domínios por período (o `.db` do Health Connect **ou** os
+> CSVs do Health Sync). As duas trazem as mesmas leituras; importar ambas duplicaria os dados.
+> Os CSVs não têm sódio nem altura, então `sodium_mg` fica ausente e o IMC usa `YAP_HEIGHT_M`.
 
 A ingestão é **idempotente**: cada medição recebe uma `dedup_key` (hash de
 `métrica+timestamp+valor`), então reimportar arquivos sobrepostos não duplica.
