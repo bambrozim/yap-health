@@ -56,11 +56,14 @@ inbox folder → ingestion → canonical SQLite → domain aggregation → rules
 
 ### Ingestion (`app/ingestion/`)
 
-- **Two sources, Health Connect is canonical.** The `.db` SQLite export (`health_connect.py`)
-  is the structured source of truth. Health Sync `.tcx` files (`health_sync_workouts.py`) only
-  supplement workout summaries. Health Sync CSVs are derived from Health Connect, so they aren't
-  re-imported.
-- `runner.process_file()` dispatches by file suffix (`.db` → measurements, `.tcx` → workouts).
+- **Sources.** The Health Connect `.db` SQLite export (`health_connect.py`) is the canonical
+  source for the five scored domains. Health Sync `.tcx` files (`health_sync_workouts.py`)
+  supplement workout summaries. The **Clue native JSON export** (`clue.py`, `measurements.json`)
+  provides the **menstrual cycle** (period/flow) — this is informational and **not scored**, and
+  lives in its own `cycle_entries` table (not `measurements`). Health Sync CSVs are derived from
+  Health Connect, so they aren't re-imported.
+- `runner.process_file()` dispatches by file suffix (`.db` → measurements, `.tcx` → workouts,
+  `measurements.json` → cycle entries).
   `process_inbox()` walks a folder; `watcher.watch()` is the watchdog daemon for live imports.
 - **Idempotency** is via `make_dedup_key()` in `base.py` (`base.py`): `source:uuid` when
   available, else `source:sha1(metric|ts|value)`. `persist.py` skips rows whose `dedup_key`
@@ -96,8 +99,10 @@ buckets measurements by UTC date using each metric's agg rule.
 ### Service + API (`app/domain/service.py`, `app/api/main.py`)
 
 `service.build_scoreboard()` assembles overall + domain scores from the latest daily values.
-FastAPI endpoints: `/api/score`, `/api/metrics/{metric}`, `/api/alerts`, `/api/insights`,
-`/api/import/status`. All take `?from=&to=` date params — note `from` is a reserved word, so the
+`cycle.cycle_summary()` derives menstrual-cycle stats (current cycle day, last period, average
+cycle length) by grouping `cycle_entries` into periods. FastAPI endpoints: `/api/score`,
+`/api/metrics/{metric}`, `/api/alerts`, `/api/insights`, `/api/cycle`, `/api/import/status`.
+The metric/score/alert/insight endpoints take `?from=&to=` date params — note `from` is a reserved word, so the
 handlers use `Query(alias="from")` with a `from_` parameter.
 
 ### Frontend (`frontend/src/`)

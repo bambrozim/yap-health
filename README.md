@@ -22,7 +22,8 @@ pasta sincronizada (inbox)  →  ingestão  →  SQLite canônico  →  motor de
 
 - **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, SQLite.
 - **Frontend:** React + TypeScript (Vite), Recharts, Tailwind.
-- **Domínios:** Atividade, Cardíaco, Sono, Nutrição e Corpo (todos os 5 do roadmap entregues).
+- **Domínios:** Atividade, Cardíaco, Sono, Nutrição e Corpo (todos pontuados). Além de uma
+  seção de **Ciclo menstrual** (do Clue), informativa e não pontuada.
 
 ## Fontes de dados e deduplicação
 
@@ -30,6 +31,7 @@ pasta sincronizada (inbox)  →  ingestão  →  SQLite canônico  →  motor de
 |---|---|
 | Health Connect export (`.db` SQLite) | **Canônico** — armazenamento estruturado de origem |
 | Health Sync `.tcx` (treinos) | Suplemento — resumo de treino (duração, distância, calorias) |
+| Clue export nativo (`measurements.json`) | Ciclo menstrual (período/fluxo) — informativo, **não pontuado** |
 
 A ingestão é **idempotente**: cada medição recebe uma `dedup_key` (hash de
 `métrica+timestamp+valor`), então reimportar arquivos sobrepostos não duplica.
