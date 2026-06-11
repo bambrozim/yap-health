@@ -68,6 +68,13 @@ inbox folder → ingestion → canonical SQLite → domain aggregation → rules
   (period/flow) — informational, **not scored**, in its own `cycle_entries` table.
 - `runner.process_file()` dispatches by file suffix (`.db` → HC measurements, `.csv` → Health
   Sync measurements, `.tcx` → workouts, `measurements.json` → cycle entries).
+- **Source resolution (`source.py`).** Ingestion reads from a folder resolved by
+  `resolve_source_dir()`: explicit `settings.source_dir` (`YAP_SOURCE_DIR`), else auto-detecting
+  the Google Drive for Desktop mount (`~/Library/CloudStorage/GoogleDrive-*`) by looking for the
+  `Clue Woman Health` / `Health Sync *` marker folders. `runner.sync_from_source()` ties this to
+  the `POST /api/import/run` endpoint (the dashboard's "Sincronizar do Drive" button) and is the
+  CLI default when no path is given. Re-ingestion is idempotent (dedup), so syncing re-reads the
+  whole folder cheaply.
 - **Two quirks worth knowing:** Health Sync CSVs have no sodium (nutrition) or height column —
   so `sodium_mg` is absent and BMI is derived from `settings.height_m` (`YAP_HEIGHT_M`, default
   1.61). Sleep CSVs are stage segments aggregated per night in `health_sync_csv.py` (segments

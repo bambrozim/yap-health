@@ -55,30 +55,32 @@ cd backend
 uv venv --python 3.12 .venv
 uv pip install -e ".[dev]"
 
-# Importar um snapshot existente (pasta com .db / .tcx):
-.venv/bin/python -m app.cli "../references/data/health_data/Clue Woman Health"
+# Importar da origem (Drive auto-detectado ou pasta explícita):
+.venv/bin/python -m app.cli                              # usa a origem resolvida
+.venv/bin/python -m app.cli "../references/data/health_data"   # ou uma pasta específica
 
 # Subir a API:
 .venv/bin/uvicorn app.api.main:app --port 8000
 ```
 
 A API serve em `http://localhost:8000`. Endpoints:
-`/api/score`, `/api/metrics/{metric}`, `/api/alerts`, `/api/insights`, `/api/import/status`
-(parâmetros de janela: `?from=YYYY-MM-DD&to=YYYY-MM-DD`).
+`/api/score`, `/api/metrics/{metric}`, `/api/alerts`, `/api/insights`, `/api/cycle`,
+`POST /api/import/run`, `/api/import/status` (janela: `?from=YYYY-MM-DD&to=YYYY-MM-DD`).
 
-### Ingestão automática (pasta observada)
+### Ingestão a partir do Google Drive
 
-Aponte o export automático do Health Sync para uma pasta sincronizada com o PC e rode o
-watcher, que importa novos arquivos sozinho:
+O fluxo recomendado usa o **Google Drive for Desktop**, que monta o Drive como uma pasta local:
 
-```python
-from pathlib import Path
-from app.ingestion.watcher import watch
-watch(Path("/caminho/para/inbox"))   # bloqueante
-```
+1. Instale o **Google Drive para computador** e faça login. O Drive vira algo como
+   `~/Library/CloudStorage/GoogleDrive-<email>/My Drive/...`.
+2. Coloque ali as pastas com os **mesmos nomes** de `data/health_data` (`Clue Woman Health`,
+   `Health Sync Steps`, …) e jogue os arquivos novos nelas de tempos em tempos.
+3. No dashboard, clique em **"Sincronizar do Drive"** (chama `POST /api/import/run`). O app
+   **encontra a pasta automaticamente** dentro do mount do Drive e reimporta (idempotente).
 
-A pasta padrão do app é `backend/data/inbox` (veja `app/config.py`; configurável via
-variáveis de ambiente `YAP_INBOX_DIR` / `YAP_DB_PATH`).
+A origem é resolvida assim: `YAP_SOURCE_DIR` (se definido) → auto-detecção do mount do Drive.
+Defina `YAP_SOURCE_DIR` para forçar um caminho específico. O `.db`/`db_path` e outras opções
+ficam em `app/config.py` (env `YAP_*`).
 
 ### Frontend
 
