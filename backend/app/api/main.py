@@ -1,6 +1,6 @@
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
-from datetime import date
+from datetime import date, datetime, timezone
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,8 +10,10 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal, init_db
 from app.db.models import ImportRun
 from app.domain.aggregation import daily_series
+from app.domain.cycle import cycle_summary
 from app.domain.metrics import METRICS
 from app.domain.service import build_scoreboard, latest_daily_values
+from app.ingestion.runner import sync_from_source
 from app.rules.evaluation import evaluate_value
 from app.rules.insights import trend_insight
 
@@ -83,6 +85,16 @@ def get_insights(from_: date = _From, to: date = _To,
             out.append({"metric": ins.metric, "text": ins.text,
                         "severity": ins.severity})
     return {"insights": out}
+
+
+@app.get("/api/cycle")
+def get_cycle(session: Session = Depends(get_session)):
+    return cycle_summary(session, datetime.now(timezone.utc).date())
+
+
+@app.post("/api/import/run")
+def run_import(session: Session = Depends(get_session)):
+    return sync_from_source(session)
 
 
 @app.get("/api/import/status")

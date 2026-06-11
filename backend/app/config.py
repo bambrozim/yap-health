@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     data_dir: Path = Path(__file__).resolve().parents[1] / "data"
     db_path: Path | None = None
     inbox_dir: Path | None = None
+    # Root folder to ingest health data from. With Google Drive for Desktop this
+    # is the mounted Drive folder holding "Clue Woman Health" / "Health Sync *".
+    # Leave unset to auto-detect the Drive mount (see app/ingestion/source.py).
+    source_dir: Path | None = None
     # Health Sync CSVs carry no height column; BMI is derived from this.
     # Override with YAP_HEIGHT_M. Default is the value from the Health Connect export.
     height_m: float = 1.61

@@ -3,7 +3,9 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db.models import ImportRun
+from app.ingestion.source import resolve_source_dir
 from app.ingestion.clue import ClueJsonImporter
 from app.ingestion.health_connect import HealthConnectSqliteImporter
 from app.ingestion.health_sync_csv import HealthSyncCsvImporter
@@ -59,3 +61,16 @@ def process_inbox(session: Session, inbox: Path) -> list[ImportRun]:
         if path.is_file():
             runs.append(process_file(session, path))
     return runs
+
+
+def sync_from_source(session: Session) -> dict:
+    """Resolve the configured/auto-detected source folder and ingest it."""
+    source = resolve_source_dir(explicit=settings.source_dir)
+    if source is None:
+        return {"ok": False, "source_dir": None, "files": 0, "rows": 0,
+                "reason": "Nenhuma pasta de origem encontrada. Instale o Google "
+                          "Drive for Desktop ou defina YAP_SOURCE_DIR."}
+    runs = process_inbox(session, source)
+    rows = sum(r.rows_imported for r in runs if r.status == "ok")
+    return {"ok": True, "source_dir": str(source),
+            "files": len(runs), "rows": rows}
