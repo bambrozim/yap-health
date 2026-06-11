@@ -54,3 +54,13 @@ export const getInsights = () =>
     .then((r) => r.data.insights);
 export const getCycle = () =>
   client.get<CycleSummary>("/cycle").then((r) => r.data);
+
+export interface ImportResult {
+  ok: boolean;
+  source_dir: string | null;
+  files: number;
+  rows: number;
+  reason?: string;
+}
+export const runImport = () =>
+  client.post<ImportResult>("/import/run").then((r) => r.data);

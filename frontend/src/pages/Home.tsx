@@ -4,6 +4,7 @@ import type { Route } from "@/App";
 import { AlertsFeed } from "@/components/AlertsFeed";
 import { CycleCard } from "@/components/CycleCard";
 import { ScoreCard } from "@/components/ScoreCard";
+import { SyncButton } from "@/components/SyncButton";
 import { getAlerts, getCycle, getInsights, getScore } from "@/lib/api";
 
 const LABELS: Record<string, string> = {
@@ -24,11 +25,14 @@ export function Home({ onNavigate }: { onNavigate?: (r: Route) => void }) {
 
   return (
     <main className="mx-auto max-w-4xl space-y-8 p-8">
-      <header>
-        <h1 className="text-2xl font-bold">yap-health</h1>
-        <p className="text-sm text-slate-500">
-          Painel pessoal de saúde · dados de {score.data?.as_of ?? "—"}
-        </p>
+      <header className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">yap-health</h1>
+          <p className="text-sm text-slate-500">
+            Painel pessoal de saúde · dados de {score.data?.as_of ?? "—"}
+          </p>
+        </div>
+        <SyncButton />
       </header>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
